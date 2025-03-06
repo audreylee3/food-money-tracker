@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", loadOrders);
 
-let editingIndex = -1;
+let editingIndex = -1;  // Keeps track of which order is being edited
 
 document.getElementById("orderForm").addEventListener("submit", function (event) {
     event.preventDefault();
@@ -13,10 +13,12 @@ document.getElementById("orderForm").addEventListener("submit", function (event)
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
 
     if (editingIndex === -1) {
+        // If no editing, add a new order
         orders.push({ name, food, date, amount, paid: false });
     } else {
-        orders[editingIndex] = { name, food, date, amount, paid: false };
-        editingIndex = -1;
+        // Update existing order in localStorage
+        orders[editingIndex] = { name, food, date, amount, paid: orders[editingIndex].paid };
+        editingIndex = -1; // Reset edit mode
         document.getElementById("orderForm").querySelector("button").innerText = "Add Order";
     }
 
@@ -58,7 +60,7 @@ function loadOrders() {
 
 function markPaid(index) {
     let orders = JSON.parse(localStorage.getItem("orders")) || [];
-    orders[index].paid = !orders[index].paid;
+    orders[index].paid = !orders[index].paid; // Toggle payment status
     localStorage.setItem("orders", JSON.stringify(orders));
     loadOrders();
 }
@@ -79,7 +81,7 @@ function editOrder(index) {
     document.getElementById("date").value = order.date;
     document.getElementById("amount").value = order.amount;
 
-    editingIndex = index;
+    editingIndex = index; // Store the index being edited
     document.getElementById("orderForm").querySelector("button").innerText = "Update Order";
 }
 
